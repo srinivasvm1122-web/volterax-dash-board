@@ -1,0 +1,512 @@
+[
+  {
+    "id": "VX-01",
+    "code": "VX / 01",
+    "title": "Obstacle Avoiding Robot",
+    "category": "ROBOTICS",
+    "description": "A mobile robot that detects obstacles and navigates around them.",
+    "image": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80",
+    "price": 6500,
+    "status": "active",
+    "featured": true,
+    "tags": [
+      "robotics",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-20T05:09:37.659Z"
+  },
+  {
+    "id": "VX-02",
+    "code": "VX / 02",
+    "title": "Line Following Robot",
+    "category": "ROBOTICS",
+    "description": "A sensor-guided robot designed to follow a marked track.",
+    "image": "https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=800&q=80",
+    "price": 6500,
+    "status": "active",
+    "featured": true,
+    "tags": [
+      "robotics",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-21T05:09:37.669Z"
+  },
+  {
+    "id": "VX-03",
+    "code": "VX / 03",
+    "title": "Bluetooth Controlled Robot",
+    "category": "ROBOTICS",
+    "description": "A mobile robot operated wirelessly from a smartphone.",
+    "image": "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=800&q=80",
+    "price": 6500,
+    "status": "active",
+    "featured": true,
+    "tags": [
+      "robotics",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-22T05:09:37.669Z"
+  },
+  {
+    "id": "VX-04",
+    "code": "VX / 04",
+    "title": "Smart Fire Detection System",
+    "category": "SAFETY SYSTEMS",
+    "description": "Detects smoke or abnormal heat and triggers an alert.",
+    "image": "https://images.unsplash.com/photo-1542385151-efd9000785a0?auto=format&fit=crop&w=800&q=80",
+    "price": 3900,
+    "status": "active",
+    "featured": true,
+    "tags": [
+      "safety",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-23T05:09:37.669Z"
+  },
+  {
+    "id": "VX-05",
+    "code": "VX / 05",
+    "title": "IoT Home Automation",
+    "category": "IOT & AUTOMATION",
+    "description": "Control lights and appliances through a connected controller.",
+    "image": "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80",
+    "price": 5200,
+    "status": "active",
+    "featured": true,
+    "tags": [
+      "iot",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-24T05:09:37.669Z"
+  },
+  {
+    "id": "VX-06",
+    "code": "VX / 06",
+    "title": "Smart Irrigation System",
+    "category": "AGRI-TECH",
+    "description": "Automates watering using soil-moisture sensing.",
+    "image": "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=800&q=80",
+    "price": 4800,
+    "status": "active",
+    "featured": true,
+    "tags": [
+      "agri-tech",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-25T05:09:37.669Z"
+  },
+  {
+    "id": "VX-07",
+    "code": "VX / 07",
+    "title": "Water Quality Monitoring",
+    "category": "SENSORS & IOT",
+    "description": "Monitors selected water parameters using sensor inputs.",
+    "image": "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=800&q=80",
+    "price": 5200,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "sensors",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-26T05:09:37.669Z"
+  },
+  {
+    "id": "VX-08",
+    "code": "VX / 08",
+    "title": "RFID Attendance System",
+    "category": "EMBEDDED SYSTEMS",
+    "description": "Records attendance using RFID cards or tags.",
+    "image": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
+    "price": 5800,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "embedded",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-27T05:09:37.669Z"
+  },
+  {
+    "id": "VX-09",
+    "code": "VX / 09",
+    "title": "Smart Dustbin",
+    "category": "IOT & AUTOMATION",
+    "description": "A sensor-enabled waste bin with automated lid control.",
+    "image": "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80",
+    "price": 5200,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "iot",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-28T05:09:37.669Z"
+  },
+  {
+    "id": "VX-10",
+    "code": "VX / 10",
+    "title": "Solar Tracking System",
+    "category": "RENEWABLE ENERGY",
+    "description": "Adjusts a solar panel orientation toward stronger sunlight.",
+    "image": "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=800&q=80",
+    "price": 4500,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "renewable",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-29T05:09:37.669Z"
+  },
+  {
+    "id": "VX-11",
+    "code": "VX / 11",
+    "title": "Automatic Street Light",
+    "category": "EMBEDDED SYSTEMS",
+    "description": "Controls street lighting based on ambient light conditions.",
+    "image": "https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?auto=format&fit=crop&w=800&q=80",
+    "price": 5800,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "embedded",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-30T05:09:37.669Z"
+  },
+  {
+    "id": "VX-12",
+    "code": "VX / 12",
+    "title": "Password Based Door Lock",
+    "category": "SECURITY SYSTEMS",
+    "description": "Electronic access control using a keypad interface.",
+    "image": "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80",
+    "price": 4500,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "security",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-10-31T05:09:37.669Z"
+  },
+  {
+    "id": "VX-13",
+    "code": "VX / 13",
+    "title": "Gas Leakage Alert System",
+    "category": "SAFETY SYSTEMS",
+    "description": "Detects selected combustible gases and raises an alarm.",
+    "image": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+    "price": 3900,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "safety",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-01T05:09:37.669Z"
+  },
+  {
+    "id": "VX-14",
+    "code": "VX / 14",
+    "title": "Weather Monitoring Station",
+    "category": "IOT & SENSORS",
+    "description": "Collects and displays local environmental readings.",
+    "image": "https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=800&q=80",
+    "price": 5200,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "iot",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-02T05:09:37.669Z"
+  },
+  {
+    "id": "VX-15",
+    "code": "VX / 15",
+    "title": "Smart Parking System",
+    "category": "IOT & AUTOMATION",
+    "description": "Detects parking-slot occupancy and reports availability.",
+    "image": "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=800&q=80",
+    "price": 5200,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "iot",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-03T05:09:37.669Z"
+  },
+  {
+    "id": "VX-16",
+    "code": "VX / 16",
+    "title": "Gesture Controlled Robot",
+    "category": "ROBOTICS",
+    "description": "Uses gesture input to control a mobile robotic platform.",
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+    "price": 6500,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "robotics",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-04T05:09:37.669Z"
+  },
+  {
+    "id": "VX-17",
+    "code": "VX / 17",
+    "title": "Voice Controlled Appliances",
+    "category": "IOT & AUTOMATION",
+    "description": "Operates compatible appliances through voice commands.",
+    "image": "https://images.unsplash.com/photo-1543512214-318c7553f230?auto=format&fit=crop&w=800&q=80",
+    "price": 5200,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "iot",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-05T05:09:37.669Z"
+  },
+  {
+    "id": "VX-18",
+    "code": "VX / 18",
+    "title": "Bluetooth Home Automation",
+    "category": "IOT & AUTOMATION",
+    "description": "Wireless appliance switching through a Bluetooth interface.",
+    "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+    "price": 5200,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "iot",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-06T05:09:37.669Z"
+  },
+  {
+    "id": "VX-19",
+    "code": "VX / 19",
+    "title": "Digital Notice Board",
+    "category": "EMBEDDED SYSTEMS",
+    "description": "Displays remotely updated messages on an electronic screen.",
+    "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+    "price": 5800,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "embedded",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-07T05:09:37.669Z"
+  },
+  {
+    "id": "VX-20",
+    "code": "VX / 20",
+    "title": "Automatic Plant Watering",
+    "category": "AGRI-TECH",
+    "description": "Waters plants when measured soil moisture falls below a set level.",
+    "image": "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80",
+    "price": 4800,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "agri-tech",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-08T05:09:37.669Z"
+  },
+  {
+    "id": "VX-21",
+    "code": "VX / 21",
+    "title": "Radar Detection System",
+    "category": "ROBOTICS & SENSORS",
+    "description": "Scans nearby objects with a rotating distance sensor.",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
+    "price": 6500,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "robotics",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-09T05:09:37.669Z"
+  },
+  {
+    "id": "VX-22",
+    "code": "VX / 22",
+    "title": "Self Balancing Robot",
+    "category": "ROBOTICS",
+    "description": "Uses motion sensing and motor control to maintain balance.",
+    "image": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&w=800&q=80",
+    "price": 6500,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "robotics",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-10T05:09:37.669Z"
+  },
+  {
+    "id": "VX-23",
+    "code": "VX / 23",
+    "title": "RFID Based Security System",
+    "category": "SECURITY SYSTEMS",
+    "description": "Provides tag-based identification and access control.",
+    "image": "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=800&q=80",
+    "price": 4500,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "security",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-11T05:09:37.669Z"
+  },
+  {
+    "id": "VX-24",
+    "code": "VX / 24",
+    "title": "Smart Energy Meter",
+    "category": "IOT & ENERGY",
+    "description": "Measures electrical usage and presents consumption data.",
+    "image": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80",
+    "price": 5200,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "iot",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-12T05:09:37.669Z"
+  },
+  {
+    "id": "VX-25",
+    "code": "VX / 25",
+    "title": "Automatic Railway Gate",
+    "category": "EMBEDDED SYSTEMS",
+    "description": "Demonstrates sensor-based railway crossing gate automation.",
+    "image": "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=800&q=80",
+    "price": 5800,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "embedded",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-13T05:09:37.669Z"
+  },
+  {
+    "id": "VX-26",
+    "code": "VX / 26",
+    "title": "Bluetooth Notice Display",
+    "category": "EMBEDDED SYSTEMS",
+    "description": "Updates a scrolling display using a wireless connection.",
+    "image": "https://images.unsplash.com/photo-1517059224940-d4af9eec41b7?auto=format&fit=crop&w=800&q=80",
+    "price": 5800,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "embedded",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-14T05:09:37.669Z"
+  },
+  {
+    "id": "VX-27",
+    "code": "VX / 27",
+    "title": "Water Level Controller",
+    "category": "IOT & AUTOMATION",
+    "description": "Monitors tank level and controls a pump automatically.",
+    "image": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80",
+    "price": 5200,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "iot",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-15T05:09:37.669Z"
+  },
+  {
+    "id": "VX-28",
+    "code": "VX / 28",
+    "title": "Cattle Tracking Concept",
+    "category": "AGRI-TECH",
+    "description": "A prototype concept for locating tagged grazing animals.",
+    "image": "https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=800&q=80",
+    "price": 4800,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "agri-tech",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-16T05:09:37.669Z"
+  },
+  {
+    "id": "VX-29",
+    "code": "VX / 29",
+    "title": "AI Object Detection Demo",
+    "category": "AI & COMPUTER VISION",
+    "description": "Identifies selected objects using a camera and vision model.",
+    "image": "https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&w=800&q=80",
+    "price": 4500,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "ai",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-17T05:09:37.669Z"
+  },
+  {
+    "id": "VX-30",
+    "code": "VX / 30",
+    "title": "Custom Embedded Prototype",
+    "category": "CUSTOM ENGINEERING",
+    "description": "A configurable hardware and firmware build for a defined requirement.",
+    "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+    "price": 4500,
+    "status": "active",
+    "featured": false,
+    "tags": [
+      "custom",
+      "hardware",
+      "engineering"
+    ],
+    "createdAt": "2026-11-18T05:09:37.669Z"
+  }
+]
