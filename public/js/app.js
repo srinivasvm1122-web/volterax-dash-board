@@ -2,6 +2,17 @@
    VOLTERAX PRIVATE ADMIN DASHBOARD — CORE CLIENT RUNTIME
    ============================================================== */
 
+// Global fetch interceptor for 401 Unauthorized handling
+const originalFetch = window.fetch;
+window.fetch = async function(...args) {
+  const res = await originalFetch.apply(this, args);
+  const url = typeof args[0] === 'string' ? args[0] : (args[0]?.url || '');
+  if (res.status === 401 && !url.includes('/api/auth/login') && !url.includes('/api/auth/me')) {
+    window.location.href = '/';
+  }
+  return res;
+};
+
 let currentAdmin = null;
 let activeTab = 'overview';
 let cachedProjects = [];
@@ -932,8 +943,8 @@ async function loadSettings() {
   const d = await res.json();
 
   if (d.bridgeStatus) {
-    document.getElementById('set-bridge-url').value = d.bridgeStatus.baseUrl || 'https://volterax-platform.onrender.com';
-    document.getElementById('set-bridge-email').value = d.bridgeStatus.adminEmail || 'admin@volterax.in';
+    document.getElementById('set-bridge-url').value = d.bridgeStatus.baseUrl || 'https://volterax-vr1c.vercel.app';
+    document.getElementById('set-bridge-email').value = d.bridgeStatus.adminEmail || 'srinivasvm1122@gmail.com';
   }
 }
 
