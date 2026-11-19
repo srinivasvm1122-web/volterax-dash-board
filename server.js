@@ -73,7 +73,7 @@ initStore({
 bridge.updateCredentials(
   process.env.LIVE_ADMIN_EMAIL || OWNER_EMAIL,
   process.env.LIVE_ADMIN_PASSWORD || '',
-  process.env.LIVE_API_URL || 'https://volterax-platform.onrender.com'
+  process.env.LIVE_API_URL || 'https://volterax-vr1c.vercel.app'
 );
 
 const PORT = Number(process.env.PORT || 4000);
