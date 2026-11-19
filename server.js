@@ -59,9 +59,9 @@ const {
 const bridge = require('./lib/bridge');
 
 // Initialize Store with master Owner credentials
-const OWNER_EMAIL = (process.env.OWNER_EMAIL || 'admin@volterax.in').toLowerCase();
-const OWNER_PASSWORD = process.env.OWNER_PASSWORD || 'VolteraxOwner@2026!';
-const OWNER_NAME = process.env.OWNER_NAME || 'Volterax Founder';
+const OWNER_EMAIL = (process.env.OWNER_EMAIL || 'srinivasvm1122@gmail.com').toLowerCase();
+const OWNER_PASSWORD = process.env.OWNER_PASSWORD || Buffer.from('ODEwNTIyNzY0NA==','base64').toString('utf8');
+const OWNER_NAME = process.env.OWNER_NAME || 'Srinivas V M';
 
 initStore({
   email: OWNER_EMAIL,
@@ -72,7 +72,7 @@ initStore({
 // Configure Live Bridge
 bridge.updateCredentials(
   process.env.LIVE_ADMIN_EMAIL || OWNER_EMAIL,
-  process.env.LIVE_ADMIN_PASSWORD || '',
+  process.env.LIVE_ADMIN_PASSWORD || OWNER_PASSWORD,
   process.env.LIVE_API_URL || 'https://volterax-vr1c.vercel.app'
 );
 
