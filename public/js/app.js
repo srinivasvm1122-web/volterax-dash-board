@@ -521,6 +521,17 @@ async function loadOrders() {
   renderOrdersTable(cachedOrders);
 }
 
+function formatShippingAddr(a) {
+  if (!a) return '';
+  if (typeof a === 'string') return a;
+  const p = [];
+  if (a.street) p.push(a.street);
+  if (a.city) p.push(a.city);
+  if (a.state) p.push(a.state);
+  if (a.pincode) p.push('PIN: ' + a.pincode);
+  return p.join(', ');
+}
+
 function renderOrdersTable(orders) {
   const tbody = document.getElementById('orders-tbody');
   if (orders.length === 0) {
@@ -544,6 +555,14 @@ function renderOrdersTable(orders) {
       <td>
         <b>${safe(o.title || 'VOLTERAX PROJECT')}</b>
         ${o.details ? `<p style="font-size: 11px; color: var(--text-muted); margin-top: 3px; max-width: 250px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${safe(o.details)}</p>` : ''}
+        ${o.shipping_address ? `
+          <div style="margin-top: 4px; font-size: 11px; color: var(--cyan); display: flex; align-items: center; gap: 4px;">
+            <span>📍</span>
+            <span title="${safe(formatShippingAddr(o.shipping_address))}" style="max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              ${safe(formatShippingAddr(o.shipping_address))}
+            </span>
+          </div>
+        ` : `<span style="font-size: 10px; color: var(--text-dim); display: block; margin-top: 2px;">📍 No shipping address</span>`}
       </td>
       <td style="font-family: var(--font-mono); font-weight: 700; color: #34D399;">
         ${formatMoney(o.amount_paise || 0)}
@@ -559,7 +578,7 @@ function renderOrdersTable(orders) {
       </td>
       <td style="font-size: 12px; color: var(--text-muted);">${formatDate(o.createdAt || o.updatedAt)}</td>
       <td>
-        <button class="btn sm" onclick="alert('TECHNICAL SPECS / ORDER DETAILS:\\n\\n' + (${JSON.stringify(o.details || 'No details provided.')}))">
+        <button class="btn sm" onclick="alert('TECHNICAL SPECS / ORDER DETAILS:\\n\\n' + (${JSON.stringify(o.details || 'No details provided.')}) + ((${JSON.stringify(o.shipping_address ? '\\n\\nDELIVERY ADDRESS:\\n' + formatShippingAddr(o.shipping_address) : '')})))">
           View Specs
         </button>
       </td>
