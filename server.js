@@ -43,7 +43,9 @@ const {
   updateCustomerNote,
   getSettings,
   updateSettings,
-  exportFullBackup
+  exportFullBackup,
+  syncStoreProjects,
+  syncProjectToSupabase
 } = require('./lib/store');
 
 const {
@@ -323,6 +325,14 @@ async function handleRequest(req, res) {
         const search = parsedUrl.searchParams.get('search') || '';
         const category = parsedUrl.searchParams.get('category') || '';
         const status = parsedUrl.searchParams.get('status') || '';
+        try {
+          const liveProjects = await bridge.getProjects();
+          if (Array.isArray(liveProjects) && liveProjects.length > 0) {
+            syncStoreProjects(liveProjects);
+          }
+        } catch (e) {
+          console.warn('[Dashboard Projects] Bridge fetch notice:', e.message);
+        }
         const projects = getProjects({ search, category, status });
         return sendJson(res, 200, { projects, total: projects.length });
       }
@@ -330,7 +340,15 @@ async function handleRequest(req, res) {
       if (method === 'POST' && pathname === '/api/dashboard/projects') {
         const projectData = await parseBody(req);
         try {
-          const created = createProject(projectData, admin.email);
+          let liveCreated = null;
+          try {
+            const liveRes = await bridge.createProject(projectData);
+            if (liveRes && liveRes.project) liveCreated = liveRes.project;
+          } catch (be) {
+            console.error('[Dashboard Projects] Bridge create notice:', be.message);
+          }
+          const created = createProject(liveCreated || projectData, admin.email);
+          syncProjectToSupabase(created);
           return sendJson(res, 201, { ok: true, project: created });
         } catch (err) {
           return sendJson(res, 400, { error: err.message });
@@ -338,20 +356,34 @@ async function handleRequest(req, res) {
       }
 
       if (method === 'PATCH' && pathname.startsWith('/api/dashboard/projects/')) {
-        const projectId = pathname.split('/').pop();
+        const projectId = decodeURIComponent(pathname.split('/').pop());
         const projectData = await parseBody(req);
         try {
-          const updated = updateProject(projectId, projectData, admin.email);
-          return sendJson(res, 200, { ok: true, project: updated });
+          let liveUpdated = null;
+          try {
+            const liveRes = await bridge.updateProject(projectId, projectData);
+            if (liveRes && liveRes.project) liveUpdated = liveRes.project;
+          } catch (be) {
+            console.error('[Dashboard Projects] Bridge update notice:', be.message);
+          }
+          const updated = updateProject(projectId, liveUpdated || projectData, admin.email);
+          syncProjectToSupabase(updated);
+          return sendJson(res, 200, { ok: true, project: updated, syncedLive: Boolean(liveUpdated) });
         } catch (err) {
           return sendJson(res, 400, { error: err.message });
         }
       }
 
       if (method === 'DELETE' && pathname.startsWith('/api/dashboard/projects/')) {
-        const projectId = pathname.split('/').pop();
+        const projectId = decodeURIComponent(pathname.split('/').pop());
         try {
+          try {
+            await bridge.deleteProject(projectId);
+          } catch (be) {
+            console.error('[Dashboard Projects] Bridge delete notice:', be.message);
+          }
           const deleted = deleteProject(projectId, admin.email);
+          syncProjectToSupabase(deleted, true);
           return sendJson(res, 200, { ok: true, deleted });
         } catch (err) {
           return sendJson(res, 400, { error: err.message });
