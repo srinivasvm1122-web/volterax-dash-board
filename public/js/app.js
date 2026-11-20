@@ -284,7 +284,7 @@ async function loadRecentOrders() {
         <td><strong style="color: var(--cyan); font-family: var(--font-mono);">${safe(o.order_id || o.id)}</strong></td>
         <td>
           <b>${safe(o.user || 'Unknown')}</b><br>
-          <span style="font-size: 11px; color: var(--text-muted);">${safe(o.mobile || '')}</span>
+          <span style="font-size: 11px; color: #34D399; font-family: var(--font-mono); font-weight: 600;">${safe(o.mobile || o.phone || (o.shipping_address && o.shipping_address.phone) || '—')}</span>
         </td>
         <td>${safe(o.title || 'VOLTERAX PROJECT')}</td>
         <td style="font-family: var(--font-mono); font-weight: 700; color: #34D399;">${formatMoney(o.amount_paise || 0)}</td>
@@ -549,8 +549,11 @@ function renderOrdersTable(orders) {
         <b style="color: #FFF;">${safe(o.user || 'Customer')}</b>
       </td>
       <td>
-        <a href="tel:${safe(o.mobile)}" style="color: #FFF; font-family: var(--font-mono); font-size: 12px;">${safe(o.mobile || '—')}</a><br>
-        ${o.mobile ? `<a href="https://wa.me/91${safe(o.mobile)}?text=Hello%20${encodeURIComponent(o.user || '')},%20regarding%20your%20VOLTERAX%20build%20order%20${safe(o.order_id || o.id)}" target="_blank" style="font-size: 11px; color: #34D399;">WhatsApp ↗</a>` : ''}
+        ${(() => {
+          const m = o.mobile || o.phone || (o.shipping_address && typeof o.shipping_address === 'object' ? o.shipping_address.phone : '') || '';
+          return `<a href="tel:${safe(m)}" style="color: #FFF; font-family: var(--font-mono); font-size: 12px; font-weight: 600;">${safe(m || '—')}</a><br>
+          ${m ? `<a href="https://wa.me/91${safe(m)}?text=Hello%20${encodeURIComponent(o.user || '')},%20regarding%20your%20VOLTERAX%20build%20order%20${safe(o.order_id || o.id)}" target="_blank" style="font-size: 11px; color: #34D399; text-decoration: none; font-weight: 600;">💬 WhatsApp ↗</a>` : ''}`;
+        })()}
       </td>
       <td>
         <b>${safe(o.title || 'VOLTERAX PROJECT')}</b>
@@ -608,7 +611,7 @@ function filterOrdersBySearch() {
     (o.order_id && o.order_id.toLowerCase().includes(q)) ||
     (o.id && o.id.toLowerCase().includes(q)) ||
     (o.user && o.user.toLowerCase().includes(q)) ||
-    (o.mobile && o.mobile.includes(q)) ||
+    (o.mobile && o.mobile.includes(q)) || (o.phone && o.phone.includes(q)) || (o.shipping_address && o.shipping_address.phone && o.shipping_address.phone.includes(q)) ||
     (o.title && o.title.toLowerCase().includes(q))
   );
   renderOrdersTable(filtered);
