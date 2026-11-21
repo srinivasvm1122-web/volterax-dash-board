@@ -312,31 +312,71 @@ async function loadUsers() {
 function renderUsersTable(users) {
   const tbody = document.getElementById('users-tbody');
   if (users.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-dim); padding: 24px;">No customers found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-dim); padding: 24px;">No customer logins or accounts found.</td></tr>';
     return;
   }
 
   tbody.innerHTML = users.map(u => `
     <tr>
       <td>
-        <b style="color: #FFF;">${safe(u.name)}</b><br>
-        <span class="badge ${u.statusAnnotation === 'flagged' ? 'crimson' : 'emerald'} sm" style="font-size: 9px; margin-top: 4px;">
-          ${u.statusAnnotation === 'flagged' ? 'FLAGGED' : 'ACTIVE'}
+        <b style="color: #FFF; font-size: 13px;">${safe(u.name || 'Customer')}</b><br>
+        <span class="badge ${u.statusAnnotation === 'flagged' ? 'crimson' : 'emerald'} sm" style="font-size: 9px; margin-top: 3px;">
+          ${u.statusAnnotation === 'flagged' ? 'FLAGGED' : 'VERIFIED'}
         </span>
       </td>
-      <td><span style="font-family: var(--font-mono); font-size: 11px; color: var(--cyan);">${safe(u.id)}</span></td>
       <td>
-        <a href="tel:${safe(u.mobile)}" style="color: #FFF; font-family: var(--font-mono);">${safe(u.mobile)}</a><br>
-        <a href="https://wa.me/91${safe(u.mobile)}" target="_blank" style="font-size: 11px; color: #34D399;">WhatsApp ↗</a>
+        <div>
+          <a href="tel:${safe(u.mobile)}" style="color: #FFF; font-family: var(--font-mono); font-weight: 700; font-size: 13px; text-decoration: none;">
+            ðŸ“ž ${safe(u.mobile || 'â€”')}
+          </a>
+          ${u.mobile ? `
+            <br>
+            <a href="https://wa.me/91${safe(u.mobile)}?text=Hello%20${encodeURIComponent(u.name || '')},%20greetings%20from%20VOLTERAX!" target="_blank" style="font-size: 11px; color: #34D399; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; margin-top: 2px;">
+              ðŸ’¬ WhatsApp â†—
+            </a>
+          ` : ''}
+        </div>
       </td>
-      <td><strong style="color: #A855F7; font-family: var(--font-mono);">${safe(u.ref || u.referralCode || '—')}</strong></td>
-      <td><span style="color: var(--text-muted); font-size: 12px;">${safe(u.referredBy || 'None')}</span></td>
-      <td style="font-size: 12px; color: var(--text-muted);">${formatDate(u.createdAt)}</td>
-      <td style="font-size: 12px; color: var(--text-muted);">${u.lastLoginAt ? formatDate(u.lastLoginAt) : 'Never'}</td>
       <td>
-        <button class="btn sm" onclick="toggleCustomerFlag('${u.id}', '${u.statusAnnotation === 'flagged' ? 'active' : 'flagged'}')">
-          ${u.statusAnnotation === 'flagged' ? 'Unflag' : 'Flag'}
-        </button>
+        <div>
+          <span style="color: #00E5FF; font-family: var(--font-mono); font-size: 12px; font-weight: 600;">
+            âœ‰ï¸  ${safe(u.email || 'â€”')}
+          </span>
+          ${u.email ? `
+            <br>
+            <a href="mailto:${safe(u.email)}" style="font-size: 11px; color: #C084FC; text-decoration: none; font-weight: 600; margin-top: 2px; display: inline-block;">
+              â†— Send Gmail
+            </a>
+          ` : ''}
+        </div>
+      </td>
+      <td>
+        <span style="font-family: var(--font-mono); font-size: 11px; color: var(--cyan); background: rgba(0,229,255,0.08); padding: 2px 6px; border-radius: 4px;">
+          ${safe(u.id)}
+        </span>
+      </td>
+      <td style="font-size: 12px; color: var(--text-muted);">${formatDate(u.createdAt)}</td>
+      <td style="font-size: 12px; color: ${u.lastLoginAt ? '#34D399' : 'var(--text-muted)'};">
+        ${u.lastLoginAt ? formatDate(u.lastLoginAt) : 'Never'}
+      </td>
+      <td>
+        <strong style="color: #A855F7; font-family: var(--font-mono); font-size: 11px;">
+          ${safe(u.ref || u.referralCode || 'â€”')}
+        </strong>
+      </td>
+      <td>
+        <div style="display:flex; gap:5px; align-items:center;">
+          ${u.mobile ? `
+            <a class="btn sm" href="https://wa.me/91${safe(u.mobile)}?text=Hello%20${encodeURIComponent(u.name || '')},%20greetings%20from%20VOLTERAX!" target="_blank" style="background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#34D399; padding:4px 8px; font-size:11px; border-radius:5px; text-decoration:none;" title="Chat on WhatsApp">
+              Chat
+            </a>
+          ` : ''}
+          ${u.email ? `
+            <a class="btn sm" href="mailto:${safe(u.email)}" style="background:rgba(168,85,247,0.15); border:1px solid #a855f7; color:#c084fc; padding:4px 8px; font-size:11px; border-radius:5px; text-decoration:none;" title="Email via Gmail">
+              Email
+            </a>
+          ` : ''}
+        </div>
       </td>
     </tr>
   `).join('');
@@ -351,6 +391,7 @@ function filterUsers() {
   const filtered = cachedUsers.filter(u =>
     (u.name && u.name.toLowerCase().includes(q)) ||
     (u.mobile && u.mobile.includes(q)) ||
+    (u.email && u.email.toLowerCase().includes(q)) ||
     (u.id && u.id.toLowerCase().includes(q)) ||
     (u.ref && u.ref.toLowerCase().includes(q))
   );

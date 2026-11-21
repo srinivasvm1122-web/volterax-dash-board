@@ -26,7 +26,7 @@
         </a>
         <a href="#users" class="nav-item" data-tab="users">
           <span class="icon">👥</span>
-          <span>Users Management</span>
+          <span>Customer Logins & Data</span>
           <span class="badge-count" id="badge-users">0</span>
         </a>
         <a href="#projects" class="nav-item" data-tab="projects">
@@ -251,8 +251,8 @@
         <section id="sec-users" class="page-section">
           <div class="section-head">
             <div>
-              <h2>Users Management</h2>
-              <p>Registered customer directory, verification status, and referral networks.</p>
+              <h2>Customer Logins & Registered Data</h2>
+              <p>Live verified directory of customer names, mobile phone numbers, and Gmail / email accounts entered during login & signup.</p>
             </div>
             <div class="badge emerald" id="users-count-tag">0 REGISTERED</div>
           </div>
@@ -260,7 +260,7 @@
           <div class="panel">
             <div class="panel-header">
               <div style="display: flex; gap: 10px; flex: 1; max-width: 450px;">
-                <input type="text" id="users-search" class="input" placeholder="Search by name, mobile, or referral code..." oninput="filterUsers()">
+                <input type="text" id="users-search" class="input" placeholder="Search by name, phone, Gmail, or User ID..." oninput="filterUsers()">
               </div>
               <div style="display: flex; gap: 8px;">
                 <button class="btn sm" onclick="loadUsers()">↻ Refresh</button>
@@ -272,13 +272,13 @@
                 <thead>
                   <tr>
                     <th>Customer Name</th>
+                    <th>Phone / Mobile</th>
+                    <th>Gmail / Email Address</th>
                     <th>User ID</th>
-                    <th>Mobile Phone</th>
+                    <th>Joined / Created</th>
+                    <th>Last Login</th>
                     <th>Referral Code</th>
-                    <th>Referred By</th>
-                    <th>Joined Date</th>
-                    <th>Last Active</th>
-                    <th>Actions</th>
+                    <th>Direct Contact</th>
                   </tr>
                 </thead>
                 <tbody id="users-tbody">
