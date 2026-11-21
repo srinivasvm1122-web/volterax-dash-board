@@ -327,12 +327,12 @@ function renderUsersTable(users) {
       <td>
         <div>
           <a href="tel:${safe(u.mobile)}" style="color: #FFF; font-family: var(--font-mono); font-weight: 700; font-size: 13px; text-decoration: none;">
-            ðŸ“ž ${safe(u.mobile || 'â€”')}
+            📞 ${safe(u.mobile || '—')}
           </a>
           ${u.mobile ? `
             <br>
             <a href="https://wa.me/91${safe(u.mobile)}?text=Hello%20${encodeURIComponent(u.name || '')},%20greetings%20from%20VOLTERAX!" target="_blank" style="font-size: 11px; color: #34D399; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; margin-top: 2px;">
-              ðŸ’¬ WhatsApp â†—
+              💬 WhatsApp ↗
             </a>
           ` : ''}
         </div>
@@ -340,12 +340,12 @@ function renderUsersTable(users) {
       <td>
         <div>
           <span style="color: #00E5FF; font-family: var(--font-mono); font-size: 12px; font-weight: 600;">
-            âœ‰ï¸  ${safe(u.email || 'â€”')}
+            ✉️ ${safe(u.email || '—')}
           </span>
           ${u.email ? `
             <br>
             <a href="mailto:${safe(u.email)}" style="font-size: 11px; color: #C084FC; text-decoration: none; font-weight: 600; margin-top: 2px; display: inline-block;">
-              â†— Send Gmail
+              ↗ Send Gmail
             </a>
           ` : ''}
         </div>
@@ -361,7 +361,7 @@ function renderUsersTable(users) {
       </td>
       <td>
         <strong style="color: #A855F7; font-family: var(--font-mono); font-size: 11px;">
-          ${safe(u.ref || u.referralCode || 'â€”')}
+          ${safe(u.ref || u.referralCode || '—')}
         </strong>
       </td>
       <td>
@@ -655,7 +655,7 @@ function renderOrdersTable(orders) {
             Specs
           </button>
           <button class="btn sm" style="background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#f87171; padding:5px 8px; font-size:11px; border-radius:5px; cursor:pointer;" onclick="deleteLiveOrder('${safe(o.id || o.order_id)}')" title="Delete Order">
-            ðŸ—‘ï¸ 
+            Delete
           </button>
         </div>
       </td>
