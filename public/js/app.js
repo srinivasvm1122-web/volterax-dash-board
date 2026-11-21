@@ -517,7 +517,11 @@ async function loadOrders() {
   if (!res.ok) throw new Error('Failed to load orders');
   const d = await res.json();
 
-  cachedOrders = d.orders || [];
+  // Display only genuine orders with uploaded payment screenshots
+  cachedOrders = (d.orders || []).filter(o => {
+    const ss = o.payment_screenshot || o.payment_proof || (o.shipping_address && typeof o.shipping_address === 'object' ? o.shipping_address.payment_screenshot : null);
+    return Boolean(ss && String(ss).trim().length > 15);
+  });
   renderOrdersTable(cachedOrders);
 }
 
@@ -598,9 +602,14 @@ function renderOrdersTable(orders) {
       </td>
       <td style="font-size: 12px; color: var(--text-muted);">${formatDate(o.createdAt || o.updatedAt)}</td>
       <td>
-        <button class="btn sm" onclick="alert('TECHNICAL SPECS / ORDER DETAILS:\\n\\n' + (${JSON.stringify(o.details || 'No details provided.')}) + ((${JSON.stringify(o.shipping_address ? '\\n\\nDELIVERY ADDRESS:\\n' + formatShippingAddr(o.shipping_address) : '')})))">
-          View Specs
-        </button>
+        <div style="display:flex; gap:5px; align-items:center;">
+          <button class="btn sm" onclick="alert('TECHNICAL SPECS / ORDER DETAILS:\\n\\n' + (${JSON.stringify(o.details || 'No details provided.')}) + ((${JSON.stringify(o.shipping_address ? '\\n\\nDELIVERY ADDRESS:\\n' + formatShippingAddr(o.shipping_address) : '')})))">
+            Specs
+          </button>
+          <button class="btn sm" style="background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#f87171; padding:5px 8px; font-size:11px; border-radius:5px; cursor:pointer;" onclick="deleteLiveOrder('${safe(o.id || o.order_id)}')" title="Delete Order">
+            ðŸ—‘ï¸ 
+          </button>
+        </div>
       </td>
     </tr>
   `).join('');
@@ -649,6 +658,23 @@ async function updateLiveOrderStatus(orderId, newStatus) {
   } catch (err) {
     showToast(err.message, 'error');
     loadOrders();
+  }
+}
+
+async function deleteLiveOrder(orderId) {
+  if (!confirm(`Are you sure you want to permanently delete order #${orderId}?`)) return;
+  try {
+    showToast(`Deleting order ${orderId}...`, 'info');
+    const res = await fetch(`/api/dashboard/orders/${encodeURIComponent(orderId)}`, {
+      method: 'DELETE'
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to delete order');
+
+    showToast(`✓ Order ${orderId} deleted permanently.`, 'success');
+    await loadOrders();
+  } catch (err) {
+    showToast(`Delete failed: ${err.message}`, 'error');
   }
 }
 

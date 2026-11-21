@@ -320,6 +320,17 @@ async function handleRequest(req, res) {
         }
       }
 
+      if (method === 'DELETE' && pathname.startsWith('/api/dashboard/orders/')) {
+        const orderId = pathname.split('/').pop();
+        try {
+          const result = await bridge.deleteOrder(orderId);
+          logAction(admin.email, 'ORDER_DELETED_LIVE', `Deleted live order ${orderId}`, ip);
+          return sendJson(res, 200, { ok: true, result });
+        } catch (err) {
+          return sendJson(res, 400, { error: `Failed to delete order on live platform: ${err.message}` });
+        }
+      }
+
       // --- Projects CMS ---
       if (method === 'GET' && pathname === '/api/dashboard/projects') {
         const search = parsedUrl.searchParams.get('search') || '';
