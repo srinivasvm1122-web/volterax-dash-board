@@ -345,6 +345,7 @@
                 <button class="filter-tab" onclick="filterOrdersByStatus('processing', this)">PROCESSING</button>
                 <button class="filter-tab" onclick="filterOrdersByStatus('completed', this)">COMPLETED</button>
                 <button class="filter-tab" onclick="filterOrdersByStatus('cancelled', this)">CANCELLED</button>
+                <button class="filter-tab" onclick="filterOrdersByStatus('rejected', this)" style="color:#f87171;">⚠️ REJECTED</button>
               </div>
               <input type="text" id="orders-search" class="input" style="max-width: 280px;" placeholder="Search order ID, user, title..." oninput="filterOrdersBySearch()">
             </div>
@@ -879,7 +880,7 @@
 
       <!-- Modal Footer Action Buttons -->
       <div class="modal-foot" style="padding:14px 22px; border-top:1px solid rgba(255,255,255,0.08); background:#10111d; display:flex; justify-content:space-between; align-items:center;">
-        <button type="button" class="btn sm danger" id="pss-btn-reject" onclick="window.rejectCurrentOrderPayment()" style="font-weight:700;">✕ Reject / Fake Payment</button>
+        <button type="button" class="btn sm danger" id="pss-btn-reject" onclick="window.rejectCurrentOrderPayment()" style="background:#dc2626; border-color:#dc2626; color:#fff; font-weight:900; padding:6px 14px; font-size:12px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 15px rgba(220,38,38,0.4); cursor:pointer;">⚠️ REJECT (FAKE RECEIPT)</button>
         <div style="display:flex; gap:10px;">
           <button type="button" class="btn sm secondary" onclick="closeModal('modal-payment-screenshot')">Close [ESC]</button>
           <button type="button" class="btn sm primary" id="pss-btn-approve" onclick="window.approveCurrentOrderPayment()" style="background:#10b981; border-color:#10b981; color:#050508; font-weight:900; letter-spacing:0.5px;">✓ Approve & Mark Confirmed</button>

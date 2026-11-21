@@ -618,13 +618,19 @@ function renderOrdersTable(orders) {
       <td>
         ${(() => {
           const ss = o.payment_screenshot || o.payment_proof || (o.shipping_address && typeof o.shipping_address === 'object' ? o.shipping_address.payment_screenshot : null);
+          const isRej = (o.status === 'rejected' || o.payment_status === 'fake_receipt_rejected');
           if (ss) {
             return `
-              <div style="display:flex; align-items:center; gap:6px;">
-                <img src="${safe(ss)}" style="width:44px; height:44px; border-radius:8px; object-fit:cover; border:2px solid #10b981; cursor:pointer; box-shadow:0 3px 10px rgba(16,185,129,0.35); transition:transform .18s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'" onclick="openPaymentScreenshotModal('${safe(o.order_id || o.id)}')" title="Click to view large payment screenshot" />
+              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <img src="${safe(ss)}" style="width:44px; height:44px; border-radius:8px; object-fit:cover; border:2px solid ${isRej ? '#ef4444' : '#10b981'}; cursor:pointer; box-shadow:0 3px 10px ${isRej ? 'rgba(239,68,68,0.35)' : 'rgba(16,185,129,0.35)'}; transition:transform .18s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'" onclick="openPaymentScreenshotModal('${safe(o.order_id || o.id)}')" title="Click to view large payment screenshot" />
                 <button type="button" class="btn sm" style="background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#34D399; font-weight:800; padding:6px 12px; font-size:12px; border-radius:6px; white-space:nowrap; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" onclick="openPaymentScreenshotModal('${safe(o.order_id || o.id)}')">
                   📷 View Proof
                 </button>
+                ${isRej ? `
+                  <span style="display:inline-block; padding:4px 8px; border-radius:6px; background:#ef4444; color:#fff; font-size:10px; font-weight:900; letter-spacing:0.5px;">FAKE REJECTED</span>
+                ` : `
+                  <button type="button" class="btn sm" style="background:rgba(239,68,68,0.18); border:1px solid #ef4444; color:#f87171; font-weight:800; padding:4px 8px; font-size:11px; border-radius:6px; cursor:pointer;" onclick="window.markOrderAsFakeReceipt('${safe(o.id || o.order_id)}')" title="Mark as Fake Receipt">⚠️ Fake</button>
+                `}
               </div>
             `;
           } else {
@@ -633,12 +639,13 @@ function renderOrdersTable(orders) {
         })()}
       </td>
       <td>
-        <select class="select sm" style="padding: 4px 8px; font-size: 11px; width: auto;" onchange="updateLiveOrderStatus('${o.id || o.order_id}', this.value)">
+        <select class="select sm" style="padding: 4px 8px; font-size: 11px; width: auto; font-weight:700; ${o.status === 'rejected' ? 'background:rgba(239,68,68,0.2); border-color:#ef4444; color:#fca5a5;' : ''}" onchange="updateLiveOrderStatus('${o.id || o.order_id}', this.value)">
           <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>pending</option>
           <option value="confirmed" ${o.status === 'confirmed' ? 'selected' : ''}>confirmed</option>
           <option value="processing" ${o.status === 'processing' ? 'selected' : ''}>processing</option>
           <option value="completed" ${o.status === 'completed' ? 'selected' : ''}>completed</option>
           <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>cancelled</option>
+          <option value="rejected" ${o.status === 'rejected' ? 'selected' : ''}>⚠️ rejected (fake receipt)</option>
         </select>
       </td>
       <td style="font-size: 12px; color: var(--text-muted);">${formatDate(o.createdAt || o.updatedAt)}</td>
@@ -664,7 +671,10 @@ function filterOrdersByStatus(status, btn) {
     renderOrdersTable(cachedOrders);
     return;
   }
-  const filtered = cachedOrders.filter(o => o.status === status);
+  const filtered = cachedOrders.filter(o => {
+    if (status === 'rejected') return o.status === 'rejected' || o.payment_status === 'fake_receipt_rejected';
+    return o.status === status;
+  });
   renderOrdersTable(filtered);
 }
 
@@ -684,23 +694,44 @@ function filterOrdersBySearch() {
   renderOrdersTable(filtered);
 }
 
-async function updateLiveOrderStatus(orderId, newStatus) {
+async function updateLiveOrderStatus(orderId, newStatus, extraData = {}) {
   try {
     showToast(`Syncing order ${orderId} to ${newStatus}...`, 'info');
+    const bodyPayload = { status: newStatus, ...extraData };
+    if (newStatus === 'rejected') {
+      bodyPayload.payment_status = 'fake_receipt_rejected';
+      if (!bodyPayload.payment_rejection_reason) {
+        bodyPayload.payment_rejection_reason = 'Fake or invalid payment receipt uploaded. Transaction was not credited to our UPI account.';
+      }
+    }
     const res = await fetch(`/api/dashboard/orders/${encodeURIComponent(orderId)}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus })
+      body: JSON.stringify(bodyPayload)
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to update order');
 
     showToast(`✓ Order ${orderId} updated to ${newStatus} on live platform!`, 'success');
+    await loadOrders();
   } catch (err) {
     showToast(err.message, 'error');
     loadOrders();
   }
 }
+
+window.markOrderAsFakeReceipt = async function(orderId) {
+  if (!confirm(`Are you sure you want to mark order #${orderId} as FAKE RECEIPT / REJECTED?\n\nThis will prominently alert the customer on their account page that their payment receipt was fake/invalid.`)) return;
+  try {
+    await updateLiveOrderStatus(orderId, 'rejected', {
+      payment_status: 'fake_receipt_rejected',
+      payment_rejection_reason: 'Fake or invalid payment receipt uploaded. Transaction was not credited to our UPI account.'
+    });
+    showToast(`Order #${orderId} marked as FAKE RECEIPT and customer alerted.`, 'warning');
+  } catch (err) {
+    showToast('Failed to mark fake receipt: ' + err.message, 'error');
+  }
+};
 
 async function deleteLiveOrder(orderId) {
   if (!confirm(`Are you sure you want to permanently delete order #${orderId}?`)) return;
@@ -1458,11 +1489,14 @@ window.approveCurrentOrderPayment = async function() {
 window.rejectCurrentOrderPayment = async function() {
   if (!activeProofOrder) return;
   const id = activeProofOrder.id || activeProofOrder.order_id;
-  if (!confirm(`Are you sure you want to reject order #${id} as fake / invalid payment?`)) return;
+  if (!confirm(`Are you sure you want to REJECT order #${id} as FAKE RECEIPT?\n\nThis will prominently show "REJECTED (FAKE RECEIPT)" with a red warning badge to the customer on their portal.`)) return;
   try {
-    await updateLiveOrderStatus(id, 'cancelled');
+    await updateLiveOrderStatus(id, 'rejected', {
+      payment_status: 'fake_receipt_rejected',
+      payment_rejection_reason: 'Fake or invalid payment receipt uploaded. Transaction was not credited to our UPI account.'
+    });
     closeModal('modal-payment-screenshot');
-    showToast(`Order #${id} marked as cancelled / rejected payment.`, 'warning');
+    showToast(`Order #${id} marked as FAKE RECEIPT / REJECTED on live platform!`, 'warning');
   } catch (err) {
     showToast('Failed to reject order: ' + err.message, 'error');
   }
