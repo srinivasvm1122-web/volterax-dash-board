@@ -576,8 +576,8 @@ function renderOrdersTable(orders) {
           if (ss) {
             return `
               <div style="display:flex; align-items:center; gap:6px;">
-                <img src="${safe(ss)}" style="width:34px; height:34px; border-radius:6px; object-fit:cover; border:1px solid #10b981; cursor:pointer;" onclick="openPaymentScreenshotModal('${safe(o.order_id || o.id)}')" title="Click to view full payment screenshot" />
-                <button type="button" class="btn sm" style="background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#34D399; font-weight:700; padding:4px 8px; font-size:11px; white-space:nowrap; cursor:pointer;" onclick="openPaymentScreenshotModal('${safe(o.order_id || o.id)}')">
+                <img src="${safe(ss)}" style="width:44px; height:44px; border-radius:8px; object-fit:cover; border:2px solid #10b981; cursor:pointer; box-shadow:0 3px 10px rgba(16,185,129,0.35); transition:transform .18s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'" onclick="openPaymentScreenshotModal('${safe(o.order_id || o.id)}')" title="Click to view large payment screenshot" />
+                <button type="button" class="btn sm" style="background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#34D399; font-weight:800; padding:6px 12px; font-size:12px; border-radius:6px; white-space:nowrap; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" onclick="openPaymentScreenshotModal('${safe(o.order_id || o.id)}')">
                   📷 View Proof
                 </button>
               </div>
@@ -1180,12 +1180,18 @@ function drawCategoryChart(cats) {
 // ---------------- Modal & Toast Helpers ----------------
 function openModal(id) {
   const el = document.getElementById(id);
-  if (el) el.classList.add('open');
+  if (el) {
+    el.style.display = 'flex';
+    el.classList.add('open');
+  }
 }
 
 function closeModal(id) {
   const el = document.getElementById(id);
-  if (el) el.classList.remove('open');
+  if (el) {
+    el.classList.remove('open');
+    el.style.display = 'none';
+  }
 }
 
 function showToast(msg, type = 'info') {
@@ -1249,11 +1255,73 @@ function safe(text) {
 // ---------------- Payment Screenshot Modal Handlers ----------------
 let activeProofOrder = null;
 
+
+// ---------------- Payment Screenshot Zoom & Lightbox Controls ----------------
+let currentProofZoom = 1.0;
+
+window.pssSetZoom = function(scale) {
+  currentProofZoom = Math.max(0.6, Math.min(3.5, scale));
+  const img = document.getElementById('pss-img-view');
+  if (img) {
+    img.style.transform = 'scale(' + currentProofZoom + ')';
+    img.style.cursor = currentProofZoom > 1.05 ? 'zoom-out' : 'zoom-in';
+  }
+  const zoomLabel = document.getElementById('pss-zoom-label');
+  if (zoomLabel) zoomLabel.textContent = Math.round(currentProofZoom * 100) + '%';
+};
+
+window.pssZoomIn = function() {
+  window.pssSetZoom(currentProofZoom + 0.3);
+};
+
+window.pssZoomOut = function() {
+  window.pssSetZoom(currentProofZoom - 0.3);
+};
+
+window.pssZoomReset = function() {
+  window.pssSetZoom(1.0);
+};
+
+window.pssToggleZoom = function() {
+  if (currentProofZoom > 1.1) {
+    window.pssZoomReset();
+  } else {
+    window.pssSetZoom(1.85);
+  }
+};
+
+window.pssOpenLightbox = function() {
+  if (!activeProofOrder) return;
+  const ss = activeProofOrder.payment_screenshot || activeProofOrder.payment_proof || (activeProofOrder.shipping_address && typeof activeProofOrder.shipping_address === 'object' ? activeProofOrder.shipping_address.payment_screenshot : null);
+  if (!ss) return;
+  const lb = document.getElementById('pss-lightbox-overlay');
+  const lbImg = document.getElementById('pss-lightbox-img');
+  const lbTitle = document.getElementById('pss-lightbox-title');
+  if (lb && lbImg) {
+    lbImg.src = ss;
+    if (lbTitle) lbTitle.textContent = 'Payment Proof · Order #' + (activeProofOrder.order_id || activeProofOrder.id) + ' (' + (activeProofOrder.user || 'Customer') + ')';
+    lb.style.display = 'flex';
+  }
+};
+
+window.pssCloseLightbox = function() {
+  const lb = document.getElementById('pss-lightbox-overlay');
+  if (lb) lb.style.display = 'none';
+};
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    window.pssCloseLightbox();
+    closeModal('modal-payment-screenshot');
+  }
+});
+
 window.openPaymentScreenshotModal = function(orderId) {
   const o = cachedOrders.find(item => (item.id === orderId || item.order_id === orderId));
   if (!o) return;
 
   activeProofOrder = o;
+  window.pssZoomReset();
 
   const ss = o.payment_screenshot || o.payment_proof || (o.shipping_address && typeof o.shipping_address === 'object' ? o.shipping_address.payment_screenshot : null);
 
@@ -1278,21 +1346,30 @@ window.openPaymentScreenshotModal = function(orderId) {
 
   const img = document.getElementById('pss-img-view');
   const openBtn = document.getElementById('pss-open-tab-btn');
+  const downloadBtn = document.getElementById('pss-download-btn');
   const noProofMsg = document.getElementById('pss-no-proof-msg');
+  const lbImg = document.getElementById('pss-lightbox-img');
 
   if (ss) {
     if (img) {
       img.src = ss;
       img.style.display = 'block';
     }
+    if (lbImg) lbImg.src = ss;
     if (openBtn) {
       openBtn.href = ss;
       openBtn.style.display = 'inline-flex';
+    }
+    if (downloadBtn) {
+      downloadBtn.href = ss;
+      downloadBtn.download = 'payment_proof_' + (o.order_id || o.id) + '.png';
+      downloadBtn.style.display = 'inline-flex';
     }
     if (noProofMsg) noProofMsg.style.display = 'none';
   } else {
     if (img) img.style.display = 'none';
     if (openBtn) openBtn.style.display = 'none';
+    if (downloadBtn) downloadBtn.style.display = 'none';
     if (noProofMsg) noProofMsg.style.display = 'block';
   }
 
