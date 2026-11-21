@@ -75,7 +75,7 @@ initStore({
 bridge.updateCredentials(
   process.env.LIVE_ADMIN_EMAIL || OWNER_EMAIL,
   process.env.LIVE_ADMIN_PASSWORD || OWNER_PASSWORD,
-  process.env.LIVE_API_URL || 'https://volterax-vr1c.vercel.app'
+  process.env.LIVE_API_URL || 'https://www.volterax.in'
 );
 
 const PORT = Number(process.env.PORT || 4000);

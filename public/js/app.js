@@ -1080,7 +1080,7 @@ async function loadSettings() {
   const d = await res.json();
 
   if (d.bridgeStatus) {
-    document.getElementById('set-bridge-url').value = d.bridgeStatus.baseUrl || 'https://volterax-vr1c.vercel.app';
+    document.getElementById('set-bridge-url').value = d.bridgeStatus.baseUrl || 'https://www.volterax.in';
     document.getElementById('set-bridge-email').value = d.bridgeStatus.adminEmail || 'srinivasvm1122@gmail.com';
   }
 }
