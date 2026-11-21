@@ -376,6 +376,9 @@ function renderUsersTable(users) {
               Email
             </a>
           ` : ''}
+          <button class="btn sm" style="background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#f87171; padding:4px 8px; font-size:11px; border-radius:5px; cursor:pointer;" onclick="deleteLiveCustomer('${safe(u.id)}', '${safe(u.name || u.email || 'Customer')}')" title="Delete customer account">
+            Delete
+          </button>
         </div>
       </td>
     </tr>
@@ -396,6 +399,47 @@ function filterUsers() {
     (u.ref && u.ref.toLowerCase().includes(q))
   );
   renderUsersTable(filtered);
+}
+
+async function deleteLiveCustomer(customerId, name) {
+  if (!confirm(`Are you sure you want to delete customer account '${name}' (${customerId})? This will delete the customer and terminate their sessions.`)) {
+    return;
+  }
+  try {
+    const res = await fetch(`/api/dashboard/customers/${encodeURIComponent(customerId)}`, {
+      method: 'DELETE'
+    });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error || 'Failed to delete customer');
+    alert(`Customer account '${name}' deleted successfully.`);
+    loadUsers();
+  } catch (err) {
+    alert(`Error deleting customer: ${err.message}`);
+  }
+}
+
+async function confirmClearTestData() {
+  const proceed = confirm(
+    "⚠️ CLEAR ALL TEST DATA CONFIRMATION\n\n" +
+    "This will delete all test customer logins, test orders, and test leads from the database, while keeping all projects and admin accounts intact.\n\n" +
+    "Are you sure you want to proceed and prepare the system for live production customers?"
+  );
+  if (!proceed) return;
+
+  try {
+    const res = await fetch('/api/dashboard/clear-test-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error || 'Failed to clear test data');
+    alert("✅ SUCCESS: All test customer logins and test orders have been completely cleared from the database! Only new real customers will be saved.");
+    loadUsers();
+    loadOrders();
+    loadOverview();
+  } catch (err) {
+    alert(`Error clearing test data: ${err.message}`);
+  }
 }
 
 async function toggleCustomerFlag(userId, newStatus) {

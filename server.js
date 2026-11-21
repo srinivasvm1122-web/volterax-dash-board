@@ -279,6 +279,27 @@ async function handleRequest(req, res) {
         return sendJson(res, 200, { ok: true, customerId, annotation: updated });
       }
 
+      if (method === 'DELETE' && pathname.startsWith('/api/dashboard/customers/')) {
+        const customerId = pathname.split('/').pop();
+        try {
+          const result = await bridge.deleteCustomer(customerId);
+          logAction(admin.email, 'CUSTOMER_DELETED_LIVE', `Deleted live customer ${customerId}`, ip);
+          return sendJson(res, 200, { ok: true, result });
+        } catch (err) {
+          return sendJson(res, 400, { error: `Failed to delete customer on live platform: ${err.message}` });
+        }
+      }
+
+      if (method === 'POST' && pathname === '/api/dashboard/clear-test-data') {
+        try {
+          const result = await bridge.clearTestData();
+          logAction(admin.email, 'ALL_TEST_DATA_CLEARED', 'Cleared all test customer accounts and orders for production live launch', ip);
+          return sendJson(res, 200, { ok: true, result });
+        } catch (err) {
+          return sendJson(res, 400, { error: `Failed to clear test data on live platform: ${err.message}` });
+        }
+      }
+
       // --- Orders Management ---
       if (method === 'GET' && pathname === '/api/dashboard/orders') {
         let orders = [];

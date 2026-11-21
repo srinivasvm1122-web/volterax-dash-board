@@ -266,6 +266,7 @@
               </div>
               <div style="display: flex; gap: 8px;">
                 <button class="btn sm" onclick="loadUsers()">↻ Refresh</button>
+                <button class="btn sm" style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #f87171; font-weight: 700;" onclick="confirmClearTestData()">🧹 Clear All Test Data</button>
               </div>
             </div>
 
@@ -280,7 +281,7 @@
                     <th>Joined / Created</th>
                     <th>Last Login</th>
                     <th>Referral Code</th>
-                    <th>Direct Contact</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody id="users-tbody">
@@ -910,6 +911,6 @@
   <div id="toast-container"></div>
 
   <!-- SCRIPTS -->
-  <script src="/js/app.js?v=20261122" charset="UTF-8"></script>
+  <script src="/js/app.js?v=20261122_cleandata" charset="UTF-8"></script>
 </body>
 </html>
