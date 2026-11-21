@@ -535,7 +535,7 @@ function formatShippingAddr(a) {
 function renderOrdersTable(orders) {
   const tbody = document.getElementById('orders-tbody');
   if (orders.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-dim); padding: 24px;">No customer orders found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-dim); padding: 24px;">No customer orders found.</td></tr>';
     return;
   }
 
@@ -569,6 +569,23 @@ function renderOrdersTable(orders) {
       </td>
       <td style="font-family: var(--font-mono); font-weight: 700; color: #34D399;">
         ${formatMoney(o.amount_paise || 0)}
+      </td>
+      <td>
+        ${(() => {
+          const ss = o.payment_screenshot || o.payment_proof || (o.shipping_address && typeof o.shipping_address === 'object' ? o.shipping_address.payment_screenshot : null);
+          if (ss) {
+            return `
+              <div style="display:flex; align-items:center; gap:6px;">
+                <img src="${safe(ss)}" style="width:34px; height:34px; border-radius:6px; object-fit:cover; border:1px solid #10b981; cursor:pointer;" onclick="openPaymentScreenshotModal('${safe(o.order_id || o.id)}')" title="Click to view full payment screenshot" />
+                <button type="button" class="btn sm" style="background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#34D399; font-weight:700; padding:4px 8px; font-size:11px; white-space:nowrap; cursor:pointer;" onclick="openPaymentScreenshotModal('${safe(o.order_id || o.id)}')">
+                  📷 View Proof
+                </button>
+              </div>
+            `;
+          } else {
+            return `<span style="font-size:11px; color:#ef4444; font-weight:600; display:inline-flex; align-items:center; gap:3px;">⚠️ No Proof</span>`;
+          }
+        })()}
       </td>
       <td>
         <select class="select sm" style="padding: 4px 8px; font-size: 11px; width: auto;" onchange="updateLiveOrderStatus('${o.id || o.order_id}', this.value)">
@@ -1227,3 +1244,82 @@ function safe(text) {
     "'": '&#39;'
   }[c]));
 }
+
+
+// ---------------- Payment Screenshot Modal Handlers ----------------
+let activeProofOrder = null;
+
+window.openPaymentScreenshotModal = function(orderId) {
+  const o = cachedOrders.find(item => (item.id === orderId || item.order_id === orderId));
+  if (!o) return;
+
+  activeProofOrder = o;
+
+  const ss = o.payment_screenshot || o.payment_proof || (o.shipping_address && typeof o.shipping_address === 'object' ? o.shipping_address.payment_screenshot : null);
+
+  const subEl = document.getElementById('pss-order-subtitle');
+  if (subEl) subEl.textContent = 'Order #' + (o.order_id || o.id);
+
+  const nameEl = document.getElementById('pss-cust-name');
+  if (nameEl) nameEl.textContent = o.user || o.userName || 'Customer';
+
+  const m = o.mobile || o.phone || (o.shipping_address && typeof o.shipping_address === 'object' && o.shipping_address.phone) || '';
+  const phoneEl = document.getElementById('pss-cust-phone');
+  if (phoneEl) phoneEl.textContent = m || 'Not provided';
+
+  const amtEl = document.getElementById('pss-order-amt');
+  if (amtEl) amtEl.textContent = formatMoney(o.amount_paise || 0);
+
+  const statEl = document.getElementById('pss-order-status');
+  if (statEl) {
+    statEl.textContent = o.status || 'processing';
+    statEl.style.color = (o.status === 'confirmed' || o.status === 'completed') ? '#10b981' : (o.status === 'cancelled' ? '#ef4444' : '#f59e0b');
+  }
+
+  const img = document.getElementById('pss-img-view');
+  const openBtn = document.getElementById('pss-open-tab-btn');
+  const noProofMsg = document.getElementById('pss-no-proof-msg');
+
+  if (ss) {
+    if (img) {
+      img.src = ss;
+      img.style.display = 'block';
+    }
+    if (openBtn) {
+      openBtn.href = ss;
+      openBtn.style.display = 'inline-flex';
+    }
+    if (noProofMsg) noProofMsg.style.display = 'none';
+  } else {
+    if (img) img.style.display = 'none';
+    if (openBtn) openBtn.style.display = 'none';
+    if (noProofMsg) noProofMsg.style.display = 'block';
+  }
+
+  openModal('modal-payment-screenshot');
+};
+
+window.approveCurrentOrderPayment = async function() {
+  if (!activeProofOrder) return;
+  const id = activeProofOrder.id || activeProofOrder.order_id;
+  try {
+    await updateLiveOrderStatus(id, 'confirmed');
+    closeModal('modal-payment-screenshot');
+    showToast(`✓ Order #${id} payment verified and marked confirmed!`, 'success');
+  } catch (err) {
+    showToast('Failed to approve order: ' + err.message, 'error');
+  }
+};
+
+window.rejectCurrentOrderPayment = async function() {
+  if (!activeProofOrder) return;
+  const id = activeProofOrder.id || activeProofOrder.order_id;
+  if (!confirm(`Are you sure you want to reject order #${id} as fake / invalid payment?`)) return;
+  try {
+    await updateLiveOrderStatus(id, 'cancelled');
+    closeModal('modal-payment-screenshot');
+    showToast(`Order #${id} marked as cancelled / rejected payment.`, 'warning');
+  } catch (err) {
+    showToast('Failed to reject order: ' + err.message, 'error');
+  }
+};
